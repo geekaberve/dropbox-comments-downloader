@@ -3,190 +3,205 @@
 <!-- 2019 - Remi Peyronnet - GPL -->
 
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
-<title>Dropbox Comments Downloader</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<!-- JQuery -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<title>Dropbox Comments Downloader</title>
 
-<!-- Bootstrap -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-<!-- Dropbox  (little hack made to allow simultaneous use of the dropbox SDK and the dropbox chooser, which are not natively compatible! -->
-<script src="https://unpkg.com/dropbox@4.0.30/dist/Dropbox-sdk.min.js"></script>
-<script type="text/javascript">
-var DropboxAPI = Dropbox;
-</script>
-<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="48j9qumwdhkpi6z"></script>
-<script type="text/javascript">
-var DropboxChooser = Dropbox;
-</script>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-<style media = "all">
-.title {
-	font-size: xxx-large;
-	text-align: center;
-	color: #007ee5;
-}
-</style>
+	<!-- Dropbox  (little hack made to allow simultaneous use of the dropbox SDK and the dropbox chooser, which are not natively compatible! -->
+	<script src="https://unpkg.com/dropbox@4.0.30/dist/Dropbox-sdk.min.js"></script>
+	<script type="text/javascript">
+		var DropboxAPI = Dropbox;
+	</script>
+	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs"
+		data-app-key="93ido4hjvasxbze"></script>
+	<script type="text/javascript">
+		var DropboxChooser = Dropbox;
+	</script>
+
+	<style media="all">
+		.title {
+			font-size: xxx-large;
+			text-align: center;
+			color: #007ee5;
+		}
+	</style>
 
 </head>
 
 <body>
 
-<a href="https://github.com/rpeyron/dropbox-comments-downloader" style="float: right;"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+	<a href="https://github.com/rpeyron/dropbox-comments-downloader" style="float: right;"><img width="149" height="149"
+			src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149"
+			class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
 
-<div id="container" class="align-content-center text-center" >
+	<div id="container" class="align-content-center text-center">
 
-<div class="title mb-2"><i class="fa fa-dropbox"></i> Comments Downloader</div>
-<div id="comments"></div>
+		<div class="title mb-2"><i class="fa fa-dropbox"></i> Comments Downloader</div>
+		<div id="comments"></div>
 
-<div id="pre-auth-section" style="display:none;">
-  <a href="" id="authlink" class="btn btn-lg btn-primary center">Authenticate</a>
-</div>
+		<div id="pre-auth-section" style="display:none;">
+			<a href="" id="authlink" class="btn btn-lg btn-primary center">Authenticate</a>
+		</div>
 
-<div id="authed-section" style="display:none;">
-<div id="select">
-<button type="button" class="btn btn-lg btn-primary mb-2 center" onclick="var Dropbox = DropboxChooser; Dropbox.choose(chooserOptions);">Select File</button>
-</div>
-<div id="comments-download" style="display:none;" >
-<a href="" id="comments-download-a" download="comments.json" class="btn btn-lg btn-primary mb-2 center">Download comments as JSON file</a>
-</div>
-<div id="comments-list" style="display:none; text-align: left;" >
- Comments :
-  <ul id="comments-list-ul"></ul>
-</div>
-</div>
-	
-</div>
+		<div id="authed-section" style="display:none;">
+			<div id="select">
+				<button type="button" class="btn btn-lg btn-primary mb-2 center"
+					onclick="var Dropbox = DropboxChooser; Dropbox.choose(chooserOptions);">Select File</button>
+			</div>
+			<div id="comments-download" style="display:none;">
+				<a href="" id="comments-download-a" download="comments.json"
+					class="btn btn-lg btn-primary mb-2 center">Download comments as JSON file</a>
+			</div>
+			<div id="comments-list" style="display:none; text-align: left;">
+				Comments :
+				<ul id="comments-list-ul"></ul>
+			</div>
+		</div>
 
-<script>
+	</div>
 
-// Dropbox Client ID to be created in the Dropbox developer app console : https://www.dropbox.com/developers/apps
-var CLIENT_ID = '48j9qumwdhkpi6z';
+	<script>
 
-window.utils = {
-parseQueryString: function(str) {
-  var ret = Object.create(null);
-  if (typeof str !== 'string') {	return ret;  }
-  str = str.trim().replace(/^(\?|#|&)/, '');
-  if (!str) {	return ret;  }
-  str.split('&').forEach(function (param) {
-	var parts = param.replace(/\+/g, ' ').split('=');	// Firefox (pre 40) decodes `%3D` to `=` 	// https://github.com/sindresorhus/query-string/pull/37
-	var key = parts.shift();
-	var val = parts.length > 0 ? parts.join('=') : undefined;
-	key = decodeURIComponent(key);
-	// missing `=` should be `null`: 	// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-	val = val === undefined ? null : decodeURIComponent(val);
-	if (ret[key] === undefined) {	  ret[key] = val;
-	} else if (Array.isArray(ret[key])) {	  ret[key].push(val);
-	} else {	  ret[key] = [ret[key], val];	}
-  });
-  return ret;
-}};
-  
-// Parses the url and gets the access token if it is in the urls hash
-function getAccessTokenFromUrl() {
- return utils.parseQueryString(window.location.hash).access_token;
-}
-// If the user was just redirected from authenticating, the urls hash will
-// contain the access token.
-function isAuthenticated() {
-  return !!getAccessTokenFromUrl();
-}
+		// Dropbox Client ID to be created in the Dropbox developer app console : https://www.dropbox.com/developers/apps
+		var CLIENT_ID = '93ido4hjvasxbze';
 
-/*
-function download(filename, text) {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
-*/
-
-function processFile(files)  {
-	$.ajax({
-		url: 'https://api.dropboxapi.com/2/comments2/list_comments',
-		type: 'post',
-		data: '{"stream":{"type":{".tag":"file"},"identifier":{".tag":"file_path_or_id","file_path_or_id":"'+files[0].id+'"}},"include_permissions":true}',
-		processData: false,
-		contentType: 'application/json',
-		headers: {
-			"Authorization": "Bearer " + getAccessTokenFromUrl(),
-		},
-		success: function (data) {
-			// console.log(data);
-			// Populate button
-			document.getElementById('comments-download-a').setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data)));
-			showPageSection('comments-download');
-			// Populate list
-			var commentsContainer = document.getElementById('comments-list-ul');
-			while (commentsContainer.firstChild) {    commentsContainer.removeChild(commentsContainer.firstChild);  }
-			data.threads.forEach(function(thread) {
-				thread.comments.forEach(function(comment) {
-					if (comment.content != "") {
-						var li = document.createElement('li');
-						// Get comment user
-						user = data.users.find( u => u.id === comment.author_id);
-						li.innerHTML = "Page "+ thread.annotation_data.regions[0].page + " ("+user.public_name+") : "+ comment.content;
-						commentsContainer.appendChild(li);
-					}
+		window.utils = {
+			parseQueryString: function (str) {
+				var ret = Object.create(null);
+				if (typeof str !== 'string') { return ret; }
+				str = str.trim().replace(/^(\?|#|&)/, '');
+				if (!str) { return ret; }
+				str.split('&').forEach(function (param) {
+					var parts = param.replace(/\+/g, ' ').split('=');	// Firefox (pre 40) decodes `%3D` to `=` 	// https://github.com/sindresorhus/query-string/pull/37
+					var key = parts.shift();
+					var val = parts.length > 0 ? parts.join('=') : undefined;
+					key = decodeURIComponent(key);
+					// missing `=` should be `null`: 	// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+					val = val === undefined ? null : decodeURIComponent(val);
+					if (ret[key] === undefined) {
+						ret[key] = val;
+					} else if (Array.isArray(ret[key])) {
+						ret[key].push(val);
+					} else { ret[key] = [ret[key], val]; }
 				});
-			});
-			showPageSection('comments-list');
-		},
-		error: function (data) {
-			console.error(data);
+				return ret;
+			}
+		};
+
+
+		// Parses the url and gets the access token if it is in the urls hash
+		function getAccessTokenFromUrl() {
+			return "sl.u.AFYxsY9ThtT2FifSA9vp2Hm__cpvPZ-765KS-uURYWfW-uV-Xq48VhwyvqrnDfGr4P9clBKKxPa7SfhpPjaeez_67Uo2fjrcmTdYFsuK8nBkARUxmGv9FhDHNO1Tgnso0_aaIgZ1UbVnEuUA-cRxO0FcCOXzvgN_HvKxpSHE8upTZw-ER7Jq7DK9kCHt6T4Z2q4Jfv4sCrnj4fTdUHDu-peejo9GXWzX8IkE_uX94DEzfhAAHWn4D-GmrMNpJ16S2Mk8PZ0PIXjqlThma-IUoOiUUiGSByCFLt-NTekKbm5AALt6CVuvBZDnxEHlG5D97Oe8q9tY4QTTgTzgSEaoy4nXyU-mwawy7B0IciNp2yNbfQTnsNPMqNvvSWwLcz2ZOfkCGyAaFuQ8g56a3rahHEkcUqTUqeop7Te5RsUEZ9RHxlrLg0owTn6os4tAaD98plbiRum1cZmsbJxlYyXERsaTLbwF-pyxb06KlQRkJVLZNIhqPTC-s9_I6hJfQbBD9nttvEexIsL1e4V90-J2ORUXJPjdGYnJuH9Fr8p5H8TRu7s7arzDJUywtCvYD9FqKGFFxvDVkTN-hiXviTNnUbGJ38xGuVNsLmk7RdW32HkRM9MkZPUSh5zRyeS4px97OTMFsBHMFO2bJD_c6QlIKAOszl42nt1pYhefS0zwhqMucijfrDn88-Pb7sZ8UuASbtaK6NeAta501nScLb92pB_2R8HK_i0qK9n7hEKcvB8M-VQ1FABxLHnLhpW5CaFT2xP7jVdMAhNKTZtewsBTWUl9YRX_aEIJLGy2JpcVan8rUIqfZxfRL0OmQH4x56oAFKH_n9ouewihxV3FcmK7cSVPPqh31qk9sFOj9Bg1zUnLNeYrd1D_cCHxkSbV74FR1tqKBjQRRzz7fG9El5xFwevGE18yvygvVB3oPaPLr1AXmTW19wHryUwdVMxEOP6KmcmcTfhlH4Zsi6mbBT9hobNI1PsXv4aZni7yECPZtglx4fAeH1zUqfYPDiPC3AL7NwaOhnqw6E4je4Oe3bT-zlJjxhLyJRvvZxuQDVDYjiv15V8j80_-GiPkOseUmHKr_Y9_NnhH9bZXcTCLHR99hVmAYm6LAOAsMVUQqsnO9ApOmOrgdykFfykezE_mKQMQVKStOknvl-1juPhHYgFG4ry-4717i91XTOfHusYyKGhrYhMnVuiW60NjElcSzyV5r-xf2kzrEGZyI3O0xuMbzoSN6jU10Bb-C36E1I5VcwLq4CIcrbJ4ejDM83WwCuxgPRFd7EN8R2KmNCeM7DvNFpmMDesKSDbRSJ0oVvkRl3NDKZP68G46L0QkmMf4utf4w_UNrQ87DluYp6T1bwZr0bODG5ZFfm5zf8lXSQg9N5wYjRuwoCTobws-EHyTuWQ5EWeyYifDMytQblILy6G86KMO";
+
+			// return utils.parseQueryString(window.location.hash).access_token;
 		}
-	});
-}
+		// If the user was just redirected from authenticating, the urls hash will
+		// contain the access token.
+		function isAuthenticated() {
+			return !!getAccessTokenFromUrl();
+		}
 
-chooserOptions = {
-    success: processFile,
-    //linkType: "preview", // or "direct"
-    //multiselect: false, // or true
-    //extensions: ['.pdf', '.doc', '.docx'],
-};
+		/*
+		function download(filename, text) {
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			element.setAttribute('download', filename);
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+		}
+		*/
 
-function showPageSection(elementId) {
-  document.getElementById(elementId).style.display = 'block';
-}
+		function processFile(files) {
+			$.ajax({
+				url: 'https://api.dropboxapi.com/2/comments2/list_comments',
+				type: 'post',
+				data: '{"stream":{"type":{".tag":"file"},"identifier":{".tag":"file_path_or_id","file_path_or_id":"' + files[0].id + '"}},"include_permissions":true}',
+				processData: false,
+				contentType: 'application/json',
+				headers: {
+					"Authorization": "Bearer " + getAccessTokenFromUrl(),
+				},
+				success: function (data) {
+					// console.log(data);
+					// Populate button
+					document.getElementById('comments-download-a').setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data)));
+					showPageSection('comments-download');
+					// Populate list
+					var commentsContainer = document.getElementById('comments-list-ul');
+					while (commentsContainer.firstChild) { commentsContainer.removeChild(commentsContainer.firstChild); }
+					data.threads.forEach(function (thread) {
+						thread.comments.forEach(function (comment) {
+							if (comment.content != "") {
+								var li = document.createElement('li');
+								// Get comment user
+								user = data.users.find(u => u.id === comment.author_id);
+								li.innerHTML = "Page " + thread.annotation_data.regions[0].page + " (" + user.public_name + ") : " + comment.content;
+								commentsContainer.appendChild(li);
+							}
+						});
+					});
+					showPageSection('comments-list');
+				},
+				error: function (data) {
+					console.error(data);
+				}
+			});
+		}
+
+		chooserOptions = {
+			success: processFile,
+			//linkType: "preview", // or "direct"
+			//multiselect: false, // or true
+			//extensions: ['.pdf', '.doc', '.docx'],
+		};
+
+		function showPageSection(elementId) {
+			document.getElementById(elementId).style.display = 'block';
+		}
 
 
-if (isAuthenticated()) {
-  showPageSection('authed-section');
-  // Create an instance of Dropbox with the access token and use it to
-  // fetch and render the files in the users root directory.
-  /*
-  var dbx = new Dropbox.Dropbox({ accessToken: getAccessTokenFromUrl() });
-  dbx.filesListFolder({path: ''})
-	.then(function(response) {
-	  renderItems(response.entries);
-	})
-	.catch(function(error) {
-	  console.error(error);
-	});
-	*/
-} else {
-  showPageSection('pre-auth-section');
-  // Set the login anchors href using dbx.getAuthenticationUrl()
-  var dbx = new Dropbox.Dropbox({ clientId: CLIENT_ID });
-  // Get automatically the authentication URL from current file (to be set in the developer console)
-  var homeUrl = window.location.href.split('?')[0].split('#')[0];
-  var authUrl = dbx.getAuthenticationUrl(homeUrl);
-  document.getElementById('authlink').href = authUrl;
-}
-</script>
+		if (isAuthenticated()) {
+			showPageSection('authed-section');
+			// Create an instance of Dropbox with the access token and use it to
+			// fetch and render the files in the users root directory.
+			/*
+			var dbx = new Dropbox.Dropbox({ accessToken: getAccessTokenFromUrl() });
+			dbx.filesListFolder({path: ''})
+			  .then(function(response) {
+				renderItems(response.entries);
+			  })
+			  .catch(function(error) {
+				console.error(error);
+			  });
+			  */
+		} else {
+			showPageSection('pre-auth-section');
+			// Set the login anchors href using dbx.getAuthenticationUrl()
+			var dbx = new Dropbox.Dropbox({ clientId: CLIENT_ID });
+			// Get automatically the authentication URL from current file (to be set in the developer console)
+			var homeUrl = window.location.href.split('?')[0].split('#')[0];
+			var authUrl = dbx.getAuthenticationUrl(homeUrl);
+			document.getElementById('authlink').href = authUrl;
+		}
+	</script>
 
 </body>
+
 </html>
-
-
